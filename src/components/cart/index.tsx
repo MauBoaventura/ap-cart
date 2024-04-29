@@ -1,6 +1,6 @@
-import { IItem } from "@/interfaces/Item";
+import { IProduct } from "@/interfaces/Item";
 
-export default function Cart({ itens }: { itens: IItem[] }) {
+export default function Cart({ itens }: { itens: IProduct[] }) {
     const total = itens.reduce((acc, item) => acc + item.value, 0);
 
     return (

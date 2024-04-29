@@ -1,11 +1,13 @@
 'use client'
 
 import Cart from "@/components/cart";
+import ArrayDeObjetos from "@/components/visualizeArray";
 import { IItem } from "@/interfaces/Item";
+import { IProduct } from "@/interfaces/Produto";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-const itensMock = [
+const productsMock = [
   {
     id: "1",
     name: "Item 1",
@@ -76,36 +78,56 @@ const itensMock = [
     value: 100.00,
     isChecked: false,
   },
-] as IItem[];
+] as IProduct[];
 
 export default function Home() {
   const [cart, setCart] = useState<IItem[]>([]);
   const [itens, setItens] = useState<IItem[]>([]);
 
-  const handleAddToCart = (item: IItem) => {
-    setCart([...cart, item]);
-    setItens(itens.map((i) => {
-      if (i === item) {
-        return { ...i, isChecked: true };
-      }
-      return i;
-    }
-    ));
+  const handleAddToCart = (product: IProduct) => {
+    let resp = [];
+
+    if (cart.some((i) => i?.product?.id === product?.id)) {
+      resp = cart.map((i) => {
+        if (i.product.id === product.id) {
+          return { ...i, quant: i.quant + 1 };
+        }
+        return i;
+      });
+    } else
+      resp = [...cart, { id: product.id, product: product, quant: 1 }];
+
+    console.log(resp);
+    setCart(resp as IItem[]);
+
+    localStorage.setItem('cartItems', JSON.stringify(resp));
   };
+
   const handleRemoveFromCart = (id: string) => {
-    setCart(cart.filter((i) => i.id !== id));
-    setItens(itens.map((i) => {
-      if (i.id === id) {
-        return { ...i, isChecked: false };
-      }
-      return i;
-    }
-    ));
+    // setCart(cart.filter((i) => i.id !== id));
+    // setItens(itens.map((i) => {
+    //   if (i.id === id) {
+    //     return { ...i, isChecked: false ,};
+    //   }
+    //   return i;
+    // }
+    // ));
+    // localStorage.setItem('cartItems', JSON.stringify(cart.filter((i) => i.id !== id)));
   };
 
   useEffect(() => {
-    setItens(itensMock);
-   }, []);
+    const cartItems = localStorage.getItem('cartItems');
+    if (cartItems) {
+      setCart(JSON.parse(cartItems));
+    }
+    setItens(productsMock.map((product) => {
+      return {
+        id: product.id,
+        product: product,
+        quant: 1,
+      };
+    }));
+  }, []);
 
   return (
     <main className="grid grid-cols-5">
@@ -116,23 +138,23 @@ export default function Home() {
 
             <div key={index} className="group rounded-lg border-2 px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
               <h2 className="mb-3 text-2xl font-semibold">
-                {item.name}
+                {item.product.name}
                 <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
                   -&gt;
                 </span>
               </h2>
               <p className="m-0 max-w-[30ch] text-sm opacity-50">
-                {`R$ ${item.value.toFixed(2)}`}
+                {`R$ ${item.product.value.toFixed(2)}`}
               </p>
               <p className="m-0 max-w-[30ch] text-sm opacity-50">
-                {`${item.description}`}
+                {`${item.product.description}`}
               </p>
-              {item.isChecked ? (
+              {item.product.isChecked ? (
                 <a
                   className="flex items-center justify-center gap-2 mt-4 hover:underline"
                   href="#"
                   rel="noopener noreferrer"
-                  onClick={() => handleRemoveFromCart(item.id)}
+                  onClick={() => handleRemoveFromCart(item.product.id)}
                 >
                   <Image
                     className="rounded-full"
@@ -151,7 +173,7 @@ export default function Home() {
                   className="flex items-center justify-center gap-2 mt-4 hover:underline"
                   href="#"
                   rel="noopener noreferrer"
-                  onClick={() => handleAddToCart(item)}
+                  onClick={() => handleAddToCart(item.product)}
                 >
                   <Image
                     className="rounded-full"
@@ -172,7 +194,8 @@ export default function Home() {
         </div>
       </div>
       <div className="col-span-1 bg-gray-200">
-        <Cart itens={cart} />
+        {/* <Cart itens={cart} /> */}
+        <ArrayDeObjetos arrayDeObjetos={cart} />
       </div>
     </main>
   );
