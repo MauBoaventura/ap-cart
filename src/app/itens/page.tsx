@@ -1,6 +1,6 @@
 'use client'
 
-import Cart from "@/components/cart";
+import Cart from "@/components/cartSide";
 import ArrayDeObjetos from "@/components/visualizeArray";
 import { IItem } from "@/interfaces/Item";
 import { IProduct } from "@/interfaces/Produto";
@@ -104,16 +104,22 @@ export default function Home() {
   };
 
   const handleRemoveFromCart = (id: string) => {
-    // setCart(cart.filter((i) => i.id !== id));
-    // setItens(itens.map((i) => {
-    //   if (i.id === id) {
-    //     return { ...i, isChecked: false ,};
-    //   }
-    //   return i;
-    // }
-    // ));
-    // localStorage.setItem('cartItems', JSON.stringify(cart.filter((i) => i.id !== id)));
+    const resp = cart.filter((i) => i.product.id !== id);
+    setCart(resp);
+    localStorage.setItem('cartItems', JSON.stringify(resp));
   };
+
+  const handleRemoveAllFromCart = () => {
+    setCart([]);
+    localStorage.setItem('cartItems', JSON.stringify([]));
+  }
+
+  const handleCheckout = () => {
+    alert('Compra realizada com sucesso!');
+    handleRemoveAllFromCart();
+  }
+
+
 
   useEffect(() => {
     const cartItems = localStorage.getItem('cartItems');
@@ -194,8 +200,8 @@ export default function Home() {
         </div>
       </div>
       <div className="col-span-1 bg-gray-200">
-        {/* <Cart itens={cart} /> */}
-        <ArrayDeObjetos arrayDeObjetos={cart} />
+        <Cart itens={cart} setItens={setCart}/>
+        {/* <ArrayDeObjetos arrayDeObjetos={cart} /> */}
       </div>
     </main>
   );
