@@ -1,33 +1,16 @@
 'use client'
-import { IItem } from "@/interfaces/Item";
-import { IProduct } from "@/interfaces/Produto";
+import { IItemCheckout } from "@/interfaces/Item";
 import { useEffect, useState } from "react";
 import CardCheckoutItem from "../cardCheckoutItem";
 
-export default function CartCheckout({ itens, setItens }: { itens: IItem[], setItens?: (itens: IItem[]) => void }) {
-	const [cart, setCart] = useState<IItem[]>(itens);
-	const total = cart.reduce((acc, item) => acc + (item.product.value * item.quant), 0);
-
-
-
-	const handleAddToCart = (product: IProduct) => {
-		let resp = [];
-
-		if (cart.some((i) => i?.product?.id === product?.id)) {
-			resp = cart.map((i) => {
-				if (i.product.id === product.id) {
-					return { ...i, quant: i.quant + 1 };
-				}
-				return i;
-			});
-		} else
-			resp = [...cart, { id: product.id, product: product, quant: 1 }];
-
-		console.log(resp);
-		setCart(resp as IItem[]);
-
-		localStorage.setItem('cartItems', JSON.stringify(resp));
-	};
+export default function CartCheckout({ itens, setItens }: { itens: IItemCheckout[], setItens?: (itens: IItemCheckout[]) => void }) {
+	const [cart, setCart] = useState<IItemCheckout[]>(itens);
+	const total = cart.reduce((acc, item) => {
+		if (item.isChecked) {
+			return acc + (item.product.value * item.quant);
+		}
+		return acc;
+	}, 0);
 
 	const handleRemoveOneFromCart = (id: string) => {
 
@@ -62,18 +45,8 @@ export default function CartCheckout({ itens, setItens }: { itens: IItem[], setI
 		localStorage.setItem('cartItems', JSON.stringify(resp));
 	}
 
-	const handleRemoveAllFromCart = () => {
-		setCart([]);
-		localStorage.setItem('cartItems', JSON.stringify([]));
-	}
-
-	const handleCheckout = () => {
-		alert('Compra realizada com sucesso!');
-		handleRemoveAllFromCart();
-	}
-
 	useEffect(() => {
-		setCart(itens);
+		setCart(itens as IItemCheckout[]);
 	}, [itens]);
 
 	useEffect(() => {
@@ -82,12 +55,27 @@ export default function CartCheckout({ itens, setItens }: { itens: IItem[], setI
 		}
 	}, [cart]);
 
+	const handleCheck = (id: string) => {
+		const resp = cart.map((i) => {
+			if (i.product.id === id) {
+				return { ...i, isChecked: !i.isChecked };
+			}
+			return i;
+		});
+		setCart(resp);
+		localStorage.setItem('cartItems', JSON.stringify(resp));
+	}
 	return (
 		<div className="p-4">
 			{cart.map((item) => (
-				<CardCheckoutItem key={item.id} item={item} onRemoveOne={handleRemoveOneFromCart} onRemoveAll={handleRemoveAllByProduct} onAddOne={handleAddOneToCart} />
+				<div className="flex gap-2" key={item.id}>
+					<input type="checkbox" className="mr-2" checked={item.isChecked} onClick={() => handleCheck(item.id)} />
+					<CardCheckoutItem item={item} onRemoveOne={handleRemoveOneFromCart} onRemoveAll={handleRemoveAllByProduct} onAddOne={handleAddOneToCart} />
+				</div>
 			))}
-			<p className="text-xl font-semibold">Total: R${total.toFixed(2)}</p>
+			{/* <div className="w-full flex">
+				<p className="text-xl font-semibold">Total: R${total.toFixed(2)}</p>
+			</div> */}
 		</div>
 	);
 }
