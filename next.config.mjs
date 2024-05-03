@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "**.4devs.com.br",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        port: "",
+      }
     ],
   },
 };

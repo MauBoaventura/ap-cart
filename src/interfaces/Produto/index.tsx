@@ -4,4 +4,5 @@ export interface IProduct {
     description: string;
     value: number;
     isChecked: boolean;
+    image: string;
   }

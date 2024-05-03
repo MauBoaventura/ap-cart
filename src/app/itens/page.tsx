@@ -14,6 +14,7 @@ const productsMock = [
     description: "Descrição do item 1",
     value: 10.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "2",
@@ -21,6 +22,7 @@ const productsMock = [
     description: "Descrição do item 2",
     value: 20.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "3",
@@ -28,6 +30,7 @@ const productsMock = [
     description: "Descrição do item 3",
     value: 30.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "4",
@@ -35,6 +38,7 @@ const productsMock = [
     description: "Descrição do item 4",
     value: 40.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "5",
@@ -42,6 +46,7 @@ const productsMock = [
     description: "Descrição do item 5",
     value: 50.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "6",
@@ -49,6 +54,7 @@ const productsMock = [
     description: "Descrição do item 6",
     value: 60.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "7",
@@ -56,6 +62,7 @@ const productsMock = [
     description: "Descrição do item 7",
     value: 70.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "8",
@@ -63,6 +70,7 @@ const productsMock = [
     description: "Descrição do item 8",
     value: 80.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "9",
@@ -70,6 +78,7 @@ const productsMock = [
     description: "Descrição do item 9",
     value: 90.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
   {
     id: "10",
@@ -77,40 +86,41 @@ const productsMock = [
     description: "Descrição do item 10",
     value: 100.00,
     isChecked: false,
+    image: 'https://picsum.photos/40',
   },
 ] as IProduct[];
 
 export default function Home() {
-  const [cart, setCart] = useState<IItem[]>([]);
+  const [itensIntoCart, setItensIntoCart] = useState<IItem[]>([]);
   const [itens, setItens] = useState<IItem[]>([]);
 
   const handleAddToCart = (product: IProduct) => {
     let resp = [];
 
-    if (cart.some((i) => i?.product?.id === product?.id)) {
-      resp = cart.map((i) => {
+    if (itensIntoCart.some((i) => i?.product?.id === product?.id)) {
+      resp = itensIntoCart.map((i) => {
         if (i.product.id === product.id) {
           return { ...i, quant: i.quant + 1 };
         }
         return i;
       });
     } else
-      resp = [...cart, { id: product.id, product: product, quant: 1 }];
+      resp = [...itensIntoCart, { id: product.id, product: product, quant: 1 }];
 
     console.log(resp);
-    setCart(resp as IItem[]);
+    setItensIntoCart(resp as IItem[]);
 
     localStorage.setItem('cartItems', JSON.stringify(resp));
   };
 
   const handleRemoveFromCart = (id: string) => {
-    const resp = cart.filter((i) => i.product.id !== id);
-    setCart(resp);
+    const resp = itensIntoCart.filter((i) => i.product.id !== id);
+    setItensIntoCart(resp);
     localStorage.setItem('cartItems', JSON.stringify(resp));
   };
 
   const handleRemoveAllFromCart = () => {
-    setCart([]);
+    setItensIntoCart([]);
     localStorage.setItem('cartItems', JSON.stringify([]));
   }
 
@@ -124,7 +134,7 @@ export default function Home() {
   useEffect(() => {
     const cartItems = localStorage.getItem('cartItems');
     if (cartItems) {
-      setCart(JSON.parse(cartItems));
+      setItensIntoCart(JSON.parse(cartItems));
     }
     setItens(productsMock.map((product) => {
       return {
@@ -200,7 +210,7 @@ export default function Home() {
         </div>
       </div>
       <div className="col-span-1 bg-gray-200">
-        <Cart itens={cart} setItens={setCart}/>
+        <Cart itens={itensIntoCart} setItens={setItensIntoCart} />
         {/* <ArrayDeObjetos arrayDeObjetos={cart} /> */}
       </div>
     </main>
