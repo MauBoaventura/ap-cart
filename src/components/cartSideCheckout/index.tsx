@@ -79,7 +79,7 @@ export default function CartSideCheckout({ itens, setItens }: { itens: IItemChec
 				<div className="flex justify-between pl-2 py-2 rounded-lg bg-gradient-to-r from-amber-200 to-yellow-500 shadow-sm">
 					<p className="text-lg font-semibold">Cupons </p>
 					<div className="">
-						<span className="ml-2  font-bold">R$ {total}</span>
+						<span className="ml-2  font-bold">R$ {total.toFixed(2)}</span>
 						<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block " fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
 						</svg>
@@ -88,7 +88,7 @@ export default function CartSideCheckout({ itens, setItens }: { itens: IItemChec
 				<div className="flex justify-between pl-2 py-2 rounded-lg text-slate-100 bg-gradient-to-r from-slate-700 to-red-600 shadow-sm">
 					<p className="text-lg font-semibold">Descontos </p>
 					<div className="">
-						<span className="ml-2 font-bold">R$ {total}</span>
+						<span className="ml-2 font-bold">R$ {total.toFixed(2)}</span>
 						<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block " fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
 						</svg>
